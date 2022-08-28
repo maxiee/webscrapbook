@@ -122,25 +122,6 @@
             item.modify = scrapbook.dateToId();
             await book.saveMeta();
 
-            if (scrapbook.getOption("indexer.fulltextCache")) {
-              await server.requestSse({
-                query: {
-                  "a": "cache",
-                  "book": book.id,
-                  "item": item.id,
-                  "fulltext": 1,
-                  "inclusive_frames": scrapbook.getOption("indexer.fulltextCacheFrameAsPageContent"),
-                  "no_lock": 1,
-                  "no_backup": 1,
-                },
-                onMessage(info) {
-                  if (['error', 'critical'].includes(info.type)) {
-                    alert(`Error when updating fulltext cache: ${info.msg}`);
-                  }
-                },
-              });
-            }
-
             await book.loadTreeFiles(true);  // update treeLastModified
           },
         });

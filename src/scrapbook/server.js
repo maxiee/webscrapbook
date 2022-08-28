@@ -1440,25 +1440,6 @@ scrapbook.toc(${JSON.stringify(jsonData, null, 2).replace(/\u2028/g, '\\u2028').
           item.modify = scrapbook.dateToId();
           await book.saveMeta();
 
-          if (scrapbook.getOption("indexer.fulltextCache")) {
-            await this.server.requestSse({
-              query: {
-                "a": "cache",
-                "book": book.id,
-                "item": item.id,
-                "fulltext": 1,
-                "inclusive_frames": scrapbook.getOption("indexer.fulltextCacheFrameAsPageContent"),
-                "no_lock": 1,
-                "no_backup": 1,
-              },
-              onMessage(info) {
-                if (['error', 'critical'].includes(info.type)) {
-                  errors.push(`Error when updating fulltext cache: ${info.msg}`);
-                }
-              },
-            });
-          }
-
           await book.loadTreeFiles(true);  // update treeLastModified
         },
       });
